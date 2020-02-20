@@ -4,6 +4,7 @@ from reddit import *
 import time
 import datetime
 
+
 class DBoperations:
 
     def __init__(self) -> None:
@@ -33,16 +34,24 @@ class DBoperations:
         st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
 
         for coinName in returnList:
-            dataFrame = getSubredditData(coinName)
+            dataFrame = None
+            try:
+                dataFrame = getSubredditData(coinName)
+
+            except Exception as e:
+                print("Error ", e)
             if dataFrame is not None:
                 for index, row in dataFrame.iterrows():
-                    print(row['id'])
                     try:
                         print(row)
                         self.cur.execute(
                             "INSERT INTO REDDIT_DATA(ID, NAME, TIME_STAMP, TITLE, SCORE, SUBREDDIT, URL, NUM_COMMENTS, BODY, CREATED) VALUES('{}','{}','{}','{}','{}','{}','{}','{}','{}','{}')".format(
-                                row['id'], coinName, st, row['title'].join(e for e in row['title'] if e.isalnum()).replace("\'", ""), row['score'], row['subreddit'], row['url'],
-                                row['num_comments'], row['body'].join(e for e in row['body'] if e.isalnum()).replace("\'", ""), row['created']))
+                                row['id'], coinName, st,
+                                row['title'].join(e for e in row['title'] if e.isalnum()).replace("\'", ""),
+                                row['score'], row['subreddit'], row['url'],
+                                row['num_comments'],
+                                row['body'].join(e for e in row['body'] if e.isalnum()).replace("\'", ""),
+                                row['created']))
 
                     except Exception as e:
                         print("ERROR ", e)

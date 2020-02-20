@@ -13,7 +13,7 @@ def getSubredditData(subName):
         print("ERROR: ", e)
         return None
 
-    for post in subreddit.hot(limit=100):
+    for post in subreddit.new(limit=100):
         posts.append(
             [post.title, post.score, post.id, post.subreddit, post.url, post.num_comments, post.selftext, post.created])
     posts = pd.DataFrame(posts, columns=['title', 'score', 'id', 'subreddit', 'url', 'num_comments', 'body', 'created'])
